@@ -72,6 +72,7 @@ void main() {
                 ),
               ),
         ),
+        themeMode: ThemeMode.dark,
         debugShowCheckedModeBanner: false,
         home: const Expenses(),
       ),
