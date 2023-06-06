@@ -60,6 +60,8 @@ class _ExpensesState extends State<Expenses> {
 
   @override
   Widget build(BuildContext context) {
+    final displayWidth = MediaQuery.of(context).size.width;
+
     Widget mainContent = const Center(
       child: Text(
         'No Item added yet',
@@ -95,14 +97,23 @@ class _ExpensesState extends State<Expenses> {
               ),
             ],
           )),
-      body: Column(
-        children: [
-          Chart(expenses: _registeredExpenses),
-          Expanded(
-            child: mainContent,
-          ),
-        ],
-      ),
+      body: displayWidth < 600
+          ? Column(
+              children: [
+                Chart(expenses: _registeredExpenses),
+                Expanded(
+                  child: mainContent,
+                ),
+              ],
+            )
+          : Row(
+              children: [
+                Expanded(child: Chart(expenses: _registeredExpenses)),
+                Expanded(
+                  child: mainContent,
+                ),
+              ],
+            ),
       floatingActionButton: FloatingActionButton(
         onPressed: _openModalSheet,
         backgroundColor: Colors.green,
