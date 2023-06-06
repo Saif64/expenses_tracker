@@ -14,4 +14,4 @@
 <img src="https://github.com/Saif64/expenses_tracker/blob/master/screenshots/add_light.png" width="320" height="640">
 <img src="https://github.com/Saif64/expenses_tracker/blob/master/screenshots/datePicker_light.png" width="320" height="640">
 <img src="https://github.com/Saif64/expenses_tracker/blob/master/screenshots/datePicker_dark.png" width="320" height="640">
-<img src="https://github.com/Saif64/expenses_tracker/blob/master/screenshots/datePicker_dark.png" width="320" height="640">
+<img src="https://github.com/Saif64/expenses_tracker/blob/master/screenshots/Screenshot%202023-06-06%20at%2011.21.18.png" width="320" height="640">
