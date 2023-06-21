@@ -1,4 +1,8 @@
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+
 import 'package:personal_expenses/components/chart.dart';
 import 'package:personal_expenses/components/expenses_list.dart';
 import 'package:personal_expenses/components/modal_input.dart';
@@ -13,20 +17,15 @@ class Expenses extends StatefulWidget {
 }
 
 class _ExpensesState extends State<Expenses> {
-  final List<Expense> _registeredExpenses = [
-    Expense(
-      name: 'Iphone 14 pro Max',
-      amount: 150000,
-      time: DateTime.now(),
-      category: Category.work,
-    ),
-    Expense(
-      name: 'Rent',
-      amount: 25000,
-      time: DateTime.now(),
-      category: Category.others,
-    ),
-  ];
+  List<Expense> _registeredExpenses = [];
+
+  var expenseName;
+  var expenseAmount;
+  var expenseTime;
+  var expenseCategory;
+  final url = Uri.https(
+      'tododevhub-default-rtdb.asia-southeast1.firebasedatabase.app',
+      'expense.json');
 
   void _openModalSheet() {
     showModalBottomSheet(
@@ -36,8 +35,28 @@ class _ExpensesState extends State<Expenses> {
             ));
   }
 
-  void _addExpense(Expense expense) {
+  void _addExpense(Expense expense) async {
     setState(() => _registeredExpenses.add(expense));
+    for (var item in _registeredExpenses) {
+      expenseName = item.name;
+      expenseAmount = item.amount;
+      expenseTime = item.time;
+      expenseCategory = item.category.name;
+    }
+
+    await http.post(
+      url,
+      headers: {'Content-Type': 'aplication/json'},
+      body: jsonEncode(
+        {
+          'name': expenseName,
+          'amount': expenseAmount,
+          'time': expenseTime.toString(),
+          'category': expenseCategory,
+        },
+      ),
+    );
+    _loadItem();
   }
 
   void _removeExpense(Expense expense) {
@@ -56,6 +75,35 @@ class _ExpensesState extends State<Expenses> {
         ),
       ),
     );
+    http.delete(url);
+    _loadItem();
+  }
+
+  void _loadItem() async {
+    final response = await http.get(url);
+    // print(response.body);
+    final Map<String, dynamic> listData = json.decode(response.body);
+    final List<Expense> listItems = [];
+
+    for (var item in listData.entries) {
+      listItems.add(
+        Expense(
+          name: item.value['name'],
+          amount: item.value['amount'],
+          time: DateTime.tryParse(item.value['time'])!,
+          category: Category.others,
+        ),
+      );
+    }
+    setState(() {
+      _registeredExpenses = listItems;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadItem();
   }
 
   @override
